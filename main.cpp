@@ -1,5 +1,6 @@
 #include "flipHeader.h"
 int main(){
-	flipGame flip;
-	flip.playGame();
+	flipGame *flip = new flipGame;
+	flip->playGame();
+	delete flip;
 }

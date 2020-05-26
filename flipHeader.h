@@ -21,11 +21,13 @@ class deck{
 public:
 	card *first;
 	card *last;
+	card *tmp;
 	deck(); //Constructor that creates deck with cards in order
+	~deck(); //deConstructor to free memory 
 	void addCard(string, int); 	//add card to deck (for constructor) 
 	
 	void printDeck();		//prints cards in deck
-	void replace(card *ptr); 	//card(parameter by value), put at bottom of deck
+	void replace();		 	//card(parameter by value), put at bottom of deck
 	void shuffle();			//shuffles cards in the deck
 };
 

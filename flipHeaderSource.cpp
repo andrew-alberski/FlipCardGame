@@ -11,7 +11,7 @@ void card :: printCard(){
 deck :: deck() {
 	first = NULL;
 	last  = NULL;
-
+	tmp   = NULL;
 	//create deck with cards in order
 	string suits[4] = { "Harts" , "Clubs" , "Spades" , "Diamonds"};
 	for( int i = 0; i < 4; i++){ //assign suit
@@ -24,6 +24,23 @@ deck :: deck() {
 	int numShuffles = 3; //Total number of deck shuffles
 	for( int i = 0; i < numShuffles; i++)
 		shuffle();
+}
+
+deck :: ~deck(){
+	card *current = first;
+	card *next;
+	
+	while( current != NULL){ //free nodes from memory
+	next = current -> next;
+	delete current;
+	current = next;
+	}
+	
+	first   = NULL;
+	last    = NULL;
+	current = NULL;
+	tmp     = NULL;
+	next    = NULL; //free pointers from memory
 }
 
 void deck :: addCard( string inSuit, int inValue){
@@ -45,7 +62,6 @@ void deck :: addCard( string inSuit, int inValue){
 }
 
 void deck :: printDeck(){
-	card *tmp;
 	tmp = first;
 	while( tmp != NULL){
 		cout << "Card: " << endl;
@@ -55,33 +71,34 @@ void deck :: printDeck(){
 }
 
 void deck :: shuffle(){
-	card *tmp = first;
+	tmp = first;
 	srand(time(NULL));
 	int randCard; //random card to be choosen
 	
-	for( int i = 1; i <= 52; i++){ //52 total swaps
-		randCard = rand() % 52; //pick random card
+	for( int i = 0; i < 52; i++){ //52 total swaps
+		randCard = rand() % 51; //pick random card
 		for( int j = 0; j<= randCard; j++){
-			tmp = tmp -> next; //find card
 			if ( j == randCard)
-				replace(tmp); //move card to bottom
+				replace(); //move card to bottom
+			tmp =tmp -> next; //find card
 		}
 		tmp = first; //start from begining
 	}	
+	
 }
 
-void deck :: replace(card *ptr){
+void deck :: replace(){
 	//store card info in temporary variables
 	string tempSuit = last -> suit;
 	int tempValue  = last -> value;
 	
 	//Assign input values to the last card
-	last -> suit  = ptr -> suit;
-	last -> value = ptr -> value;
+	last -> suit  = tmp -> suit;
+	last -> value = tmp -> value;
 	
 	//Assign last temporary values to the input card
-	ptr -> suit  = tempSuit;
-	ptr -> value = tempValue;
+	tmp -> suit  = tempSuit;
+	tmp -> value = tempValue;
 }
 
 //functions for flipGame class
@@ -124,7 +141,7 @@ void flipGame :: getPoints(){
 	else if( value == 7)
 		points = "Loose half :( ";
 	
-	if( suit == "harts") 
+	if( suit == "Harts") 
 		harts = " +1 point for Hart"; 
 	
 	cout << "\nThe outcome is: " << points << harts <<endl; 
@@ -135,6 +152,7 @@ void flipGame :: playGame(){
 	int picks           = 0;	 	//number of cards that have been drawn
 	bool keepPlaying    = true; 		//player wants ro keep playing
 	
+	//cardDeck.printDeck();		//for debugging 
 	cout << "Welcome to Flip, Deck has been shuffled, Lets Play!" << endl;
 	while( keepPlaying && (picks < 52)){
 		keepPlaying = getUserInput();
